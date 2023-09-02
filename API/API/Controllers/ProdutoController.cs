@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Data;
+using API.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API;
 
@@ -19,6 +21,8 @@ public class ProdutoController : ControllerBase
     [Route("buscar/{nome}")]
     public IActionResult Buscar([FromRoute] string nome)
     {
+        // AppDataContext context = new AppDataContext();
+        // context.
         foreach (Produto produtoCadastrado in produtos)
         {
             if (produtoCadastrado.Nome == nome)
