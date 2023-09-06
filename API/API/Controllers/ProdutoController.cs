@@ -36,16 +36,12 @@ public class ProdutoController : ControllerBase
     //POST: api/produto/cadastrar
     [HttpPost]
     [Route("cadastrar")]
-    public IActionResult Cadastrar([FromBody] Produto produto)
+    public IActionResult Cadastrar([FromServices] AppDataContext ctx,
+        [FromBody] Produto produto)
     {
-        produtos.Add(produto);
+        ctx.Produtos.Add(produto);
+        ctx.SaveChanges();
         return Created("", produto);
     }
 
 }
-
-// if (produtos.Count == 0)
-// {
-//     return NotFound();
-// }
-// return Ok(produtos);
