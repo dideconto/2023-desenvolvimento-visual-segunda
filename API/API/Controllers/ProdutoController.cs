@@ -2,46 +2,115 @@
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API;
+namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/produto")]
 public class ProdutoController : ControllerBase
 {
-    private static List<Produto> produtos = new List<Produto>();
+    private readonly AppDataContext _ctx;
+    public ProdutoController(AppDataContext ctx)
+    {
+        _ctx = ctx;
+    }
 
     //GET: api/produto/listar
     [HttpGet]
     [Route("listar")]
-    public IActionResult Listar() =>
-        produtos.Count == 0 ? NotFound() : Ok(produtos);
+    public IActionResult Listar()
+    {
+        try
+        {
+            List<Produto> produtos = _ctx.Produtos.ToList();
+            return produtos.Count == 0 ? NotFound() : Ok(produtos);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
-    //GET: api/produto/buscar/{bolacha}
+    [HttpPost]
+    [Route("cadastrar")]
+    public IActionResult Cadastrar([FromBody] Produto produto)
+    {
+        try
+        {
+            _ctx.Produtos.Add(produto);
+            _ctx.SaveChanges();
+            return Created("", produto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     [HttpGet]
     [Route("buscar/{nome}")]
     public IActionResult Buscar([FromRoute] string nome)
     {
-        // AppDataContext context = new AppDataContext();
-        // context.
-        foreach (Produto produtoCadastrado in produtos)
+        try
         {
-            if (produtoCadastrado.Nome == nome)
+            Produto? produtoCadastrado = _ctx.Produtos.FirstOrDefault(x => x.Nome == nome);
+            if (produtoCadastrado != null)
             {
                 return Ok(produtoCadastrado);
             }
+            return NotFound();
         }
-        return NotFound();
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
-    //POST: api/produto/cadastrar
-    [HttpPost]
-    [Route("cadastrar")]
-    public IActionResult Cadastrar([FromServices] AppDataContext ctx,
+    [HttpDelete]
+    [Route("deletar/{id}")]
+    public IActionResult Deletar([FromRoute] int id)
+    {
+        try
+        {
+            Produto? produtoCadastrado = _ctx.Produtos.Find(id);
+            if (produtoCadastrado != null)
+            {
+                _ctx.Produtos.Remove(produtoCadastrado);
+                _ctx.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("alterar/{id}")]
+    public IActionResult Alterar([FromRoute] int id,
         [FromBody] Produto produto)
     {
-        ctx.Produtos.Add(produto);
-        ctx.SaveChanges();
-        return Created("", produto);
+        try
+        {
+            //Expressões lambda
+            Produto? produtoCadastrado =
+                _ctx.Produtos.FirstOrDefault(x => x.ProdutoId == id);
+            if (produtoCadastrado != null)
+            {
+                produtoCadastrado.Nome = produto.Nome;
+                produtoCadastrado.Descricao = produto.Descricao;
+                produtoCadastrado.Quantidade = produto.Quantidade;
+                produtoCadastrado.Preco = produto.Preco;
+                _ctx.Produtos.Update(produtoCadastrado);
+                _ctx.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
-
 }
