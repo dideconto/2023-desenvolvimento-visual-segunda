@@ -36,12 +36,14 @@ public class ProdutoController : ControllerBase
     {
         try
         {
+            produto.Categoria = _ctx.Categorias.Find(produto.Categoria.CategoriaId);
             _ctx.Produtos.Add(produto);
             _ctx.SaveChanges();
             return Created("", produto);
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return BadRequest(e.Message);
         }
     }
@@ -96,6 +98,7 @@ public class ProdutoController : ControllerBase
             //Expressões lambda
             Produto? produtoCadastrado =
                 _ctx.Produtos.FirstOrDefault(x => x.ProdutoId == id);
+
             if (produtoCadastrado != null)
             {
                 produtoCadastrado.Nome = produto.Nome;
