@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
@@ -21,7 +22,10 @@ public class ProdutoController : ControllerBase
     {
         try
         {
-            List<Produto> produtos = _ctx.Produtos.ToList();
+            List<Produto> produtos =
+                _ctx.Produtos
+                .Include(x => x.Categoria)
+                .ToList();
             return produtos.Count == 0 ? NotFound() : Ok(produtos);
         }
         catch (Exception e)
@@ -36,7 +40,13 @@ public class ProdutoController : ControllerBase
     {
         try
         {
-            produto.Categoria = _ctx.Categorias.Find(produto.Categoria.CategoriaId);
+            Categoria? categoria =
+                _ctx.Categorias.Find(produto.CategoriaId);
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+            produto.Categoria = categoria;
             _ctx.Produtos.Add(produto);
             _ctx.SaveChanges();
             return Created("", produto);
@@ -54,7 +64,10 @@ public class ProdutoController : ControllerBase
     {
         try
         {
-            Produto? produtoCadastrado = _ctx.Produtos.FirstOrDefault(x => x.Nome == nome);
+            Produto? produtoCadastrado =
+                _ctx.Produtos
+                .Include(x => x.Categoria)
+                .FirstOrDefault(x => x.Nome == nome);
             if (produtoCadastrado != null)
             {
                 return Ok(produtoCadastrado);

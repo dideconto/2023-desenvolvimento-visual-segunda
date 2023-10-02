@@ -2,7 +2,7 @@
 GET https://localhost:7195/api/produto/listar
 
 ### Buscar produtos
-GET https://localhost:7195/api/produto/buscar/Arroz123123
+GET https://localhost:7195/api/produto/buscar/Arroz
 
 ### Cadastrar produto
 POST https://localhost:7195/api/produto/cadastrar
@@ -10,7 +10,8 @@ Content-Type: application/json
 
 {
     "nome" : "Arroz",
-    "categoria" : {
-        "categoriaId" : 2
-    }
+    "descricao" : "Tipo A",
+    "quantidade" : 150,
+    "preco" : 5.7,
+    "categoriaId" : 2
 }
