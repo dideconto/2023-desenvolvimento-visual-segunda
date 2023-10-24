@@ -1,6 +1,5 @@
-<p>
-    {{ logradouro }}
-</p>
-<p>
-    {{ localidade }}
-</p>
+<ul *ngFor="let p of produtos">
+    <li>
+        {{ p.nome }}
+    </li>
+</ul>

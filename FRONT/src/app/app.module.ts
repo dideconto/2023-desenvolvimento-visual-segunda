@@ -5,11 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProdutoListarComponent } from './pages/produto/produto-listar/produto-listar.component';
+import { ProdutoCadastrarComponent } from './pages/produto/produto-cadastrar/produto-cadastrar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProdutoListarComponent
+    ProdutoListarComponent,
+    ProdutoCadastrarComponent
   ],
   imports: [
     BrowserModule,

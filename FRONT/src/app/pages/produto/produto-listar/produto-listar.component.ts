@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Endereco } from 'src/app/models/endereco.model';
+import { Produto } from 'src/app/models/produto.model';
 
 @Component({
   selector: 'app-produto-listar',
@@ -9,9 +10,7 @@ import { Endereco } from 'src/app/models/endereco.model';
 })
 export class ProdutoListarComponent {
 
-  // endereco: Endereco;
-  logradouro: string = "";
-  localidade: string = "";
+  produtos: Produto[] = [];
 
   constructor(private client: HttpClient){ 
     //Um problema de CORS ao fazer uma requisição para a
@@ -21,17 +20,16 @@ export class ProdutoListarComponent {
   ngOnInit() : void{
     console.log("O componente foi carregado!");
 
-    this.client.get<Endereco>("https://viacep.com.br/ws/80020010/json/")
+    this.client.get<Produto[]>("https://localhost:7195/api/produto/listar")
       .subscribe({
         //Requisição com sucesso
-        next: (endereco) => {
-          console.log(endereco.logradouro, endereco.localidade);
-          this.logradouro = endereco.logradouro;
-          this.localidade = endereco.localidade;
+        next: (produtos) => {
+          this.produtos = produtos;
+          console.table(produtos);
         }, 
         //Requisição com erro
         error: (erro) => {
-          console.log("Erro: " + erro);
+          console.log(erro);
         }
       })
   }
