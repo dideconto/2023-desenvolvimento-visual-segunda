@@ -1,7 +1,12 @@
+import { Categoria } from "./categoria.model";
+
 export interface Produto {
+  produtoId?: number;
   nome: string;
   descricao: string;
-  preco: number | null;
-  quantidade: number | null;
-  categoriaId: number | null;
+  criadoEm?: string;
+  preco: number;
+  quantidade: number;
+  categoriaId: number;
+  categoria?: Categoria;
 }

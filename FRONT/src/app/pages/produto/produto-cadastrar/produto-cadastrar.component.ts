@@ -1,5 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { Categoria } from "src/app/models/categoria.model";
 import { Produto } from "src/app/models/produto.model";
 
 @Component({
@@ -8,21 +10,44 @@ import { Produto } from "src/app/models/produto.model";
   styleUrls: ["./produto-cadastrar.component.css"],
 })
 export class ProdutoCadastrarComponent {
-  constructor(private client: HttpClient) {}
+  nome: string = "";
+  descricao: string = "";
+  preco: string = "";
+  quantidade: string = "";
+  categoriaId: number = 0;
+  categorias: Categoria[] = [];
 
-  produto: Produto = {
-    nome: "",
-    descricao: "",
-    quantidade: null,
-    preco: null,
-    categoriaId: 1,
-  };
+  constructor(private client: HttpClient, private router: Router) {}
 
-  onSubmit(): void {
-    this.client.post<Produto>("https://localhost:7195/api/produto/cadastrar", this.produto).subscribe({
-      next: (data) => {
-        console.log(data);
+  ngOnInit(): void {
+    this.client.get<Categoria[]>("https://localhost:7195/api/categoria/listar").subscribe({
+      //A requição funcionou
+      next: (categorias) => {
+        console.table(categorias);
+        this.categorias = categorias;
       },
+      //A requição não funcionou
+      error: (erro) => {
+        console.log(erro);
+      },
+    });
+  }
+
+  cadastrar(): void {
+    let produto: Produto = {
+      nome: this.nome,
+      descricao: this.descricao,
+      preco: Number.parseFloat(this.preco),
+      quantidade: Number.parseInt(this.quantidade),
+      categoriaId: this.categoriaId,
+    };
+
+    this.client.post<Produto>("https://localhost:7195/api/produto/cadastrar", produto).subscribe({
+      //A requição funcionou
+      next: (produto) => {
+        this.router.navigate(["pages/produto/listar"]);
+      },
+      //A requição não funcionou
       error: (erro) => {
         console.log(erro);
       },
