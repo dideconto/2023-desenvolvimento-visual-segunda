@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
 import { Categoria } from "src/app/models/categoria.model";
 import { Produto } from "src/app/models/produto.model";
@@ -17,20 +18,26 @@ export class ProdutoCadastrarComponent {
   categoriaId: number = 0;
   categorias: Categoria[] = [];
 
-  constructor(private client: HttpClient, private router: Router) {}
+  constructor(
+    private client: HttpClient,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.client.get<Categoria[]>("https://localhost:7195/api/categoria/listar").subscribe({
-      //A requição funcionou
-      next: (categorias) => {
-        console.table(categorias);
-        this.categorias = categorias;
-      },
-      //A requição não funcionou
-      error: (erro) => {
-        console.log(erro);
-      },
-    });
+    this.client
+      .get<Categoria[]>("https://localhost:7195/api/categoria/listar")
+      .subscribe({
+        //A requição funcionou
+        next: (categorias) => {
+          console.table(categorias);
+          this.categorias = categorias;
+        },
+        //A requição não funcionou
+        error: (erro) => {
+          console.log(erro);
+        },
+      });
   }
 
   cadastrar(): void {
@@ -42,15 +49,29 @@ export class ProdutoCadastrarComponent {
       categoriaId: this.categoriaId,
     };
 
-    this.client.post<Produto>("https://localhost:7195/api/produto/cadastrar", produto).subscribe({
-      //A requição funcionou
-      next: (produto) => {
-        this.router.navigate(["pages/produto/listar"]);
-      },
-      //A requição não funcionou
-      error: (erro) => {
-        console.log(erro);
-      },
-    });
+    this.client
+      .post<Produto>(
+        "https://localhost:7195/api/produto/cadastrar",
+        produto
+      )
+      .subscribe({
+        //A requição funcionou
+        next: (produto) => {
+          this.snackBar.open(
+            "Produto cadastrado com sucesso!!",
+            "E-commerce",
+            {
+              duration: 1500,
+              horizontalPosition: "right",
+              verticalPosition: "top",
+            }
+          );
+          this.router.navigate(["pages/produto/listar"]);
+        },
+        //A requição não funcionou
+        error: (erro) => {
+          console.log(erro);
+        },
+      });
   }
 }
