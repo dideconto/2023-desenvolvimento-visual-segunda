@@ -2,7 +2,7 @@
 GET https://localhost:7195/api/produto/listar
 
 ### Buscar produtos
-GET https://localhost:7195/api/produto/buscar/Arroz
+GET https://localhost:7195/api/produto/buscar/5
 
 ### Cadastrar produto
 POST https://localhost:7195/api/produto/cadastrar

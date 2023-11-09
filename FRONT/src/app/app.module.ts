@@ -19,12 +19,14 @@ import { ProdutoListarComponent } from "./pages/produto/produto-listar/produto-l
 import { ProdutoCadastrarComponent } from "./pages/produto/produto-cadastrar/produto-cadastrar.component";
 import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ProdutoAlterarComponent } from './pages/produto/produto-alterar/produto-alterar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProdutoListarComponent,
     ProdutoCadastrarComponent,
+    ProdutoAlterarComponent,
   ],
   imports: [
     BrowserModule,
